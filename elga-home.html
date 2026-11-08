@@ -1,0 +1,685 @@
+<title>엘가호텔 홈 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;600&family=Cormorant+Garamond:wght@500;600&display=swap">
+<style>
+/* Layout: B(예약 우선 정보구조) + A(블랙·골드 로비 톤) + E(모바일 하단 고정 예약바). 해시 라우팅 3뷰: #home #rooms #location
+   단일 룩(호텔 브랜드 색 고정) — 다크 히어로/헤더 + 스톤 화이트 본문 */
+:root{
+  --ink:#0E0D0B;        /* 로비 블랙 마블 */
+  --ink-2:#1A1814;
+  --gold:#B8975A;       /* 격자 천장 금색 */
+  --gold-hi:#D9BC82;
+  --stone:#F4F2EE;      /* 본문 바탕 */
+  --paper:#FFFFFF;
+  --text:#1B1A17;
+  --mute:#6A645A;
+  --line:#E2DDD4;
+  --line-dk:rgba(184,151,90,.24);
+  --f-disp:"Noto Serif KR","Nanum Myeongjo",Georgia,serif;
+  --f-latin:"Cormorant Garamond","Noto Serif KR",Georgia,serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --gut:max(16px,env(safe-area-inset-left,0px));
+  --gutr:max(16px,env(safe-area-inset-right,0px));
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--stone);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+h1,h2,h3,h4{font-family:var(--f-disp);font-weight:400;margin:0;line-height:1.3;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+.in{max-width:1200px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gutr)}
+.eyebrow{font:600 11.5px var(--f-body);letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* proto badge */
+.proto{background:#2A241A;color:#D9CDB4;font-size:12px;text-align:center;padding:6px var(--gutr) 6px var(--gut)}
+.proto b{color:var(--gold-hi);font-weight:600}
+
+/* util + header */
+.util{background:var(--ink);color:#A59C8B;font-size:12.5px;border-bottom:1px solid var(--line-dk)}
+.util .in{display:flex;justify-content:space-between;gap:12px;padding-block:7px}
+.util b{color:var(--gold-hi);font-weight:500;letter-spacing:.02em}
+.lang{display:flex;gap:2px}
+.lang button{background:none;border:0;color:#8F8778;padding:0 6px;font-size:12px}
+.lang button[aria-pressed="true"]{color:#EDE5D3}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(14,13,11,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-dk)}
+header.top .in{display:flex;align-items:center;gap:28px;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:#EDE5D3}
+.logo svg{width:30px;height:26px}
+.logo span{font-family:var(--f-latin);font-size:24px;letter-spacing:.3em;font-weight:600;line-height:1}
+.logo small{display:block;font:500 9.5px var(--f-body);letter-spacing:.32em;color:#8F8778;margin-top:4px}
+nav.main{display:flex;gap:26px;margin-left:auto}
+nav.main a{text-decoration:none;color:#C8BFAE;font-size:14.5px;padding:6px 0;border-bottom:1px solid transparent}
+nav.main a:hover,nav.main a.on{color:#F2EBDC;border-color:var(--gold)}
+.btn-gold{background:var(--gold);color:#14110B;border:0;padding:11px 20px;font-weight:600;font-size:14px;letter-spacing:.04em;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn-gold:hover{background:var(--gold-hi)}
+.btn-line{background:none;border:1px solid var(--gold);color:var(--gold-hi);padding:10px 18px;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line-dk);color:#EDE5D3;width:42px;height:42px}
+.menu-btn svg{width:20px;height:20px;stroke:currentColor}
+.drawer{display:none}
+@media (max-width:900px){
+  nav.main,header.top .btn-gold{display:none}
+  .menu-btn{display:grid;place-items:center}
+  .drawer{display:block;background:var(--ink);border-bottom:1px solid var(--line-dk)}
+  .drawer[hidden]{display:none!important}
+  .drawer a{display:block;padding:14px var(--gutr) 14px var(--gut);color:#EDE5D3;text-decoration:none;border-top:1px solid var(--line-dk);font-size:16px}
+}
+
+/* ============ HOME ============ */
+.hero{position:relative;background:var(--ink);color:#EDE5D3;overflow:hidden}
+.hero .hero-ph.ph{position:absolute;inset:0}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,9,8,.88) 0%,rgba(10,9,8,.45) 42%,rgba(10,9,8,0) 75%),linear-gradient(0deg,rgba(10,9,8,.8) 0%,transparent 30%)}
+.hero .in{position:relative;z-index:2;padding-block:clamp(72px,11vw,140px) 150px;display:grid;gap:20px}
+.hero h1{font-size:clamp(32px,5.2vw,60px);line-height:1.22;letter-spacing:-.015em;max-width:15em}
+.hero h1 em{font-style:normal;color:var(--gold-hi)}
+.hero p.sub{color:#BDB3A1;font-size:clamp(15px,1.4vw,17px);max-width:34em}
+.phcap{position:absolute;right:calc(var(--gutr) + 4px);bottom:14px;z-index:3;font-size:11px;color:rgba(255,255,255,.62);background:rgba(0,0,0,.35);padding:3px 8px}
+
+/* photo placeholders */
+.ph{position:relative;overflow:hidden;background:#222}
+.ph>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;display:block}
+.ph>.tag{z-index:2}
+.ph-lobby{background:
+  radial-gradient(circle at 50% 50%,rgba(255,224,160,.95) 0 2.5px,rgba(255,196,110,.25) 3.5px 12px,transparent 13px) 40px 24px/84px 56px repeat-x,
+  radial-gradient(circle at 50% 50%,rgba(255,224,160,.7) 0 2px,rgba(255,196,110,.18) 3px 9px,transparent 10px) 82px 80px/84px 56px repeat-x,
+  repeating-linear-gradient(90deg,transparent 0 82px,rgba(196,158,92,.6) 82px 84px) 0 0/100% 46% no-repeat,
+  repeating-linear-gradient(180deg,transparent 0 54px,rgba(196,158,92,.45) 54px 56px) 0 0/100% 46% no-repeat,
+  repeating-linear-gradient(118deg,rgba(255,255,255,.05) 0 1px,transparent 1px 46px,rgba(196,158,92,.14) 46px 47px,transparent 47px 120px) 0 100%/100% 54% no-repeat,
+  linear-gradient(180deg,#241e16 0%,#2f271d 46%,#16120f 46.3%,#0b0a09 100%)}
+.ph-room{background:linear-gradient(180deg,transparent 58%,#f4efe6 58% 72%,#e6ddcf 72% 75%,transparent 75%),radial-gradient(ellipse at 78% 22%,rgba(255,226,170,.75),transparent 42%),linear-gradient(180deg,#b9a58a 0 58%,#6e5642 58%)}
+.ph-room2{background:linear-gradient(90deg,transparent 0 62%,rgba(40,30,22,.35) 62% 63%,transparent 63%),linear-gradient(180deg,transparent 60%,#efeae2 60% 74%,transparent 74%),radial-gradient(ellipse at 20% 20%,rgba(255,236,200,.7),transparent 45%),linear-gradient(180deg,#8c8378 0 60%,#4b3f35 60%)}
+.ph-twin{background:linear-gradient(90deg,transparent 8%,#f1ece3 8% 44%,transparent 44% 56%,#f1ece3 56% 92%,transparent 92%) 0 62%/100% 14% no-repeat,radial-gradient(ellipse at 50% 15%,rgba(255,230,180,.6),transparent 45%),linear-gradient(180deg,#a8a092 0 62%,#5a4b3e 62%)}
+.ph-suite{background:linear-gradient(90deg,transparent 0 54%,rgba(196,158,92,.5) 54% 54.6%,transparent 54.6%),linear-gradient(180deg,transparent 64%,#e9e1d3 64% 76%,transparent 76%),radial-gradient(ellipse at 30% 25%,rgba(255,220,150,.55),transparent 40%),linear-gradient(180deg,#3a3129 0 64%,#1d1814 64%)}
+.ph-family{background:linear-gradient(90deg,transparent 6%,#f3eee6 6% 58%,transparent 58% 64%,#f3eee6 64% 94%,transparent 94%) 0 60%/100% 15% no-repeat,radial-gradient(ellipse at 80% 20%,rgba(255,236,200,.65),transparent 40%),linear-gradient(180deg,#c1b4a0 0 60%,#7a634d 60%)}
+.ph-onsen{background:radial-gradient(ellipse at 30% 40%,rgba(255,255,255,.55),transparent 35%),radial-gradient(ellipse at 65% 30%,rgba(255,255,255,.4),transparent 30%),radial-gradient(ellipse at 50% 120%,#3e5a55,transparent 70%),linear-gradient(180deg,#c7cfca 0%,#8fa29b 55%,#4c645d 100%)}
+.ph-breakfast{background:radial-gradient(circle at 25% 55%,#f2d29a 0 9%,transparent 9.5%),radial-gradient(circle at 50% 50%,#fff 0 12%,#e9e4da 12.5% 13%,transparent 13.5%),radial-gradient(circle at 76% 58%,#c96f4a 0 8%,transparent 8.5%),linear-gradient(160deg,#cdbfa6,#9b8463)}
+.ph .tag{position:absolute;left:10px;bottom:9px;font-size:10.5px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:2px 7px}
+
+/* booking */
+.book-wrap{position:relative;z-index:5;margin-top:-104px}
+.book{background:var(--paper);box-shadow:0 30px 60px -30px rgba(14,13,11,.55);border-top:2px solid var(--gold)}
+.book form{display:grid;grid-template-columns:1.1fr 1.1fr .9fr 1fr auto;align-items:stretch}
+.bf{padding:16px 20px;border-right:1px solid var(--line);display:grid;gap:2px;min-width:0}
+.bf label,.bf .lb{font-size:11.5px;letter-spacing:.08em;color:var(--mute);font-weight:500}
+.bf input{border:0;background:none;font:500 16px var(--f-body);color:var(--text);padding:2px 0;width:100%;min-width:0}
+.bf input:focus{outline:none}
+.bf:focus-within{background:#FBF8F2}
+.step{display:flex;align-items:center;gap:10px}
+.step button{width:28px;height:28px;border:1px solid var(--line);background:var(--paper);border-radius:50%;line-height:1;color:var(--text)}
+.step output{font-weight:500;min-width:4.5em;text-align:center;font-variant-numeric:tabular-nums}
+.book .go{border:0;background:var(--ink);color:var(--gold-hi);font-weight:600;font-size:15px;padding:0 34px;letter-spacing:.04em}
+.book .go:hover{background:#000}
+.book-sub{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;padding:12px 20px;border-top:1px solid var(--line);background:#FBFAF7}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips .lb{font-size:12.5px;color:var(--mute);margin-right:4px}
+.chip{border:1px solid var(--line);background:var(--paper);padding:5px 13px;border-radius:999px;font-size:13.5px;color:var(--text)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--gold-hi);border-color:var(--ink)}
+.corp{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:8px}
+.corp input[type=text]{border:1px solid var(--line);padding:5px 10px;font:14px var(--f-body);width:150px;background:var(--paper)}
+@media (max-width:980px){
+  .book form{grid-template-columns:1fr 1fr}
+  .bf:nth-child(2){border-right:0}
+  .bf:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .book .go{grid-column:1/-1;padding:16px}
+  .bf:nth-child(4){border-right:0}
+}
+
+/* results */
+.results{background:var(--paper);border-top:1px solid var(--line);padding:22px 20px;display:grid;gap:16px}
+.results-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.results-h h3{font-size:20px}
+.results-h p{font-size:13px;color:var(--mute)}
+.rlist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ritem{border:1px solid var(--line);display:grid;grid-template-rows:auto 1fr}
+.ritem .ph{aspect-ratio:16/10;max-width:100%}
+.ritem .bd{padding:14px;display:grid;gap:6px;align-content:start}
+.ritem h4{font-size:17px}
+.ritem .why{font-size:12.5px;color:#7A5F2C;background:#F6EFE1;padding:2px 8px;width:max-content;max-width:100%}
+.ritem .pr{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:6px}
+.ritem .pr s{font-size:12.5px;color:var(--mute)}
+.ritem .pr b{font-size:19px;font-variant-numeric:tabular-nums;display:block}
+.ritem .pr small{font-size:11.5px;color:var(--mute)}
+.ritem .btn-gold{padding:9px 14px;font-size:13.5px}
+@media (max-width:860px){.rlist{grid-template-columns:1fr}}
+
+/* sections */
+section.blk{padding-block:clamp(64px,8vw,104px)}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:34px}
+.sh h2{font-size:clamp(26px,3.2vw,38px);margin-top:8px}
+.sh p{color:var(--mute);max-width:36em}
+.more{font-size:14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:2px;white-space:nowrap}
+
+/* why: distance (dark) */
+.why-blk{background:var(--ink);color:#EDE5D3}
+.why-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,6vw,90px);align-items:start}
+.why-grid h2{font-size:clamp(26px,3.2vw,38px);margin-top:10px}
+.why-grid .lead{color:#AFA593;margin-top:16px;max-width:30em}
+.dist{list-style:none;margin:0;padding:0}
+.dist li{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-dk)}
+.dist li:first-child{border-top:1px solid var(--line-dk)}
+.dist .nm{font-size:16.5px}
+.dist .nm small{display:block;font-size:12.5px;color:#8F8778}
+.dist .t{font-family:var(--f-latin);font-size:34px;line-height:1;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.dist .t small{font:500 13px var(--f-body);color:#AFA593;margin-left:4px}
+.facil{display:grid;grid-template-columns:repeat(5,1fr);margin-top:64px;border-top:1px solid var(--line-dk)}
+.facil div{padding:24px 18px 0 0;display:grid;gap:8px;align-content:start}
+.facil svg{width:26px;height:26px;stroke:var(--gold);fill:none;stroke-width:1.4}
+.facil b{font-weight:500;font-size:15.5px}
+.facil span{font-size:13px;color:#8F8778}
+.strip{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;margin-top:56px}
+.strip .ph{aspect-ratio:3/4;max-width:100%}
+.strip .ph:first-child{aspect-ratio:auto}
+@media (max-width:860px){.why-grid{grid-template-columns:1fr}.facil{grid-template-columns:1fr 1fr;row-gap:8px}.strip{grid-template-columns:1fr 1fr}.strip .ph:first-child{grid-column:1/-1;aspect-ratio:16/9}}
+
+/* rooms preview */
+.rp{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:18px}
+.rcard{text-decoration:none;color:inherit;display:grid;gap:12px;align-content:start}
+.rcard .ph{aspect-ratio:4/5;max-width:100%;transition:transform .5s}
+.rcard:first-child .ph{aspect-ratio:auto;height:100%;min-height:320px}
+.rcard:first-child{grid-template-rows:1fr auto}
+.rcard:hover .ph{transform:scale(1.015)}
+.rcard h3{font-size:21px}
+.rcard p{font-size:13.5px;color:var(--mute)}
+.rcard .meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.rcard .meta b{font-variant-numeric:tabular-nums;font-weight:600;font-size:15px}
+@media (max-width:860px){.rp{grid-template-columns:1fr 1fr}.rcard:first-child{grid-column:1/-1}.rcard:first-child .ph{min-height:0;aspect-ratio:16/10}}
+
+/* weekend */
+.wk{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,70px);align-items:stretch}
+.wk .ph{min-height:420px}
+.wk-body{display:grid;gap:22px;align-content:center}
+.wk-body h2{font-size:clamp(26px,3.2vw,38px)}
+.springs{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--text);border-bottom:1px solid var(--line)}
+.springs div{padding:14px 10px 14px 0}
+.springs b{font-family:var(--f-disp);font-weight:600;font-size:17px;display:block}
+.springs span{font-size:12.5px;color:var(--mute)}
+.tl{list-style:none;margin:0;padding:0;display:grid}
+.tl li{display:grid;grid-template-columns:76px 1fr;gap:12px;padding:9px 0;border-bottom:1px dotted #C9C1B2;font-size:14.5px}
+.tl time{font-size:12.5px;font-weight:600;color:#8C6A2E;font-variant-numeric:tabular-nums;padding-top:2px}
+.pkg{background:var(--ink);color:#EDE5D3;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.pkg b{font-family:var(--f-disp);font-weight:600;font-size:17px}
+.pkg span{display:block;font-size:13px;color:#AFA593}
+@media (max-width:860px){.wk{grid-template-columns:1fr}.wk .ph{min-height:260px}.springs{grid-template-columns:1fr}.springs div{border-bottom:1px solid var(--line)}}
+
+/* dining + corp */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.dcard{background:var(--paper);display:grid;grid-template-columns:1fr 1fr;min-height:300px}
+.dcard .ph{min-height:220px}
+.dcard .bd{padding:28px;display:grid;gap:12px;align-content:center}
+.dcard h3{font-size:24px}
+.dcard p{font-size:14.5px;color:var(--mute)}
+.dcard dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px}
+.dcard dt{color:var(--mute)}
+.dcard dd{margin:0;font-weight:500}
+.corpcard{background:#EAE4D8;display:grid;gap:14px;padding:32px;align-content:center;border-left:3px solid var(--gold)}
+.corpcard h3{font-size:24px}
+.corpcard ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14.5px}
+@media (max-width:980px){.duo{grid-template-columns:1fr}}
+@media (max-width:560px){.dcard{grid-template-columns:1fr}}
+
+/* location strip */
+.loc{display:grid;grid-template-columns:1.2fr 1fr;gap:0;background:var(--paper)}
+.map{min-height:340px;position:relative;background:
+  linear-gradient(90deg,transparent 47%,#fff 47% 50%,transparent 50%),
+  linear-gradient(0deg,transparent 38%,#fff 38% 42%,transparent 42%),
+  linear-gradient(28deg,transparent 58%,#F1E5C8 58% 61%,transparent 61%),
+  linear-gradient(-62deg,transparent 70%,#fff 70% 72%,transparent 72%),
+  #E4E7DF}
+.pin{position:absolute;left:47%;top:28%;display:grid;justify-items:center;gap:4px;transform:translate(-50%,-100%)}
+.pin i{width:22px;height:22px;background:var(--ink);border:3px solid var(--gold);border-radius:50% 50% 50% 0;transform:rotate(-45deg)}
+.pin span{background:var(--ink);color:var(--gold-hi);font-size:12px;padding:3px 9px;white-space:nowrap}
+.map small{position:absolute;left:12px;bottom:10px;font-size:11px;color:#6A645A}
+.loc .bd{padding:clamp(24px,4vw,44px);display:grid;gap:16px;align-content:center}
+.loc h3{font-size:24px}
+.addr{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.addr span{font-size:15.5px;user-select:all}
+.copy{border:1px solid var(--line);background:var(--stone);padding:4px 10px;font-size:12.5px}
+.ways{display:grid;gap:8px;font-size:14px}
+.ways div{display:grid;grid-template-columns:56px 1fr;gap:10px}
+.ways b{font-weight:600;color:#8C6A2E;font-size:13px}
+@media (max-width:860px){.loc{grid-template-columns:1fr}.map{min-height:240px}}
+
+/* footer */
+footer{background:var(--ink);color:#8F8778;font-size:13px;padding-block:52px 40px;margin-top:0}
+footer .in{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:32px}
+footer h4{font-family:var(--f-latin);font-size:22px;letter-spacing:.28em;color:#EDE5D3;font-weight:600}
+footer b{color:#CFC5B2;font-weight:500}
+footer .tel{font-family:var(--f-latin);font-size:30px;color:var(--gold-hi);letter-spacing:.02em}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+@media (max-width:760px){footer .in{grid-template-columns:1fr}footer{padding-bottom:110px}}
+
+/* mobile bottom bar (E) */
+.mbar{display:none}
+@media (max-width:760px){
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--paper);border-top:1px solid var(--line);
+    padding:10px var(--gutr) calc(10px + env(safe-area-inset-bottom,0px)) var(--gut);gap:8px;align-items:center;box-shadow:0 -10px 30px -20px rgba(0,0,0,.4)}
+  .mbar .info{flex:1;min-width:0;font-size:11.5px;color:var(--mute);line-height:1.35}
+  .mbar .info b{display:block;color:var(--text);font-size:14.5px;font-variant-numeric:tabular-nums}
+  .mbar a,.mbar button{border:1px solid var(--ink);background:var(--paper);color:var(--text);padding:10px 12px;font-size:13.5px;font-weight:600;text-decoration:none}
+  .mbar .pri{background:var(--ink);color:var(--gold-hi)}
+}
+
+/* ============ ROOMS VIEW ============ */
+.page-hero{background:var(--ink);color:#EDE5D3;padding-block:64px 52px}
+.page-hero h1{font-size:clamp(30px,4.4vw,48px);margin-top:10px}
+.page-hero p{color:#AFA593;margin-top:12px;max-width:36em}
+.filter{display:flex;gap:6px;flex-wrap:wrap;padding-block:24px 6px}
+.common{background:var(--paper);padding:18px 22px;display:flex;flex-wrap:wrap;gap:8px 26px;font-size:14px;margin-top:18px;border-left:3px solid var(--gold)}
+.common b{font-weight:600}
+.rooms{display:grid;gap:22px;padding-block:28px 96px}
+.room{background:var(--paper);display:grid;grid-template-columns:1.1fr 1fr;min-height:340px}
+.room .ph{min-height:260px}
+.room .bd{padding:clamp(22px,3.5vw,40px);display:grid;gap:14px;align-content:start}
+.room .k{font:600 11.5px var(--f-body);letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.room h2{font-size:clamp(24px,2.6vw,30px)}
+.room p{font-size:14.5px;color:var(--mute)}
+.spec{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.spec div{padding:12px 8px 12px 0;display:grid;gap:2px}
+.spec dt{font-size:11.5px;color:var(--mute)}
+.spec dd{margin:0;font-weight:500;font-size:14.5px;font-variant-numeric:tabular-nums}
+.room .foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.room .foot b{font-size:21px;font-variant-numeric:tabular-nums}
+.room .foot small{font-size:12px;color:var(--mute);display:block}
+@media (max-width:860px){.room{grid-template-columns:1fr}.spec{grid-template-columns:1fr 1fr}}
+
+/* ============ LOCATION VIEW ============ */
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding-block:28px 96px}
+.lgrid .map{min-height:440px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:12px 16px;font-size:14.5px;color:var(--mute);white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--text);border-color:var(--gold);font-weight:600}
+.panel{background:var(--paper);padding:22px 24px;display:grid;gap:12px;font-size:14.5px}
+.panel table{border-collapse:collapse;width:100%}
+.panel td{padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.panel td:first-child{color:var(--mute);width:42%;padding-right:12px}
+.panel tr:last-child td{border-bottom:0}
+.lcard{background:var(--paper);padding:24px;display:grid;gap:14px}
+.lcard h2{font-size:26px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:860px){.lgrid{grid-template-columns:1fr}.lgrid .map{min-height:260px}}
+
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--gold-hi);padding:9px 16px;font-size:13.5px;z-index:70}
+</style>
+
+<div class="proto">디자인 시안 · 사진과 객실 요금은 <b>현재 홈페이지(예약 위젯) 기준</b>, 소요 시간·할인·패키지는 <b>예시</b>입니다</div>
+
+<div class="util"><div class="in">
+  <span>24시간 프런트 <b>031-366-3319</b></span>
+  <div class="lang" role="group" aria-label="언어">
+    <button type="button" aria-pressed="true">KOR</button><button type="button" aria-pressed="false">ENG</button><button type="button" aria-pressed="false">中文</button>
+  </div>
+</div></div>
+
+<header class="top"><div class="in">
+  <a class="logo" href="#home" aria-label="엘가호텔 홈">
+    <svg viewBox="0 0 30 26" aria-hidden="true"><path d="M15 1 29 12h-4v13H5V12H1z" fill="none" stroke="#B8975A" stroke-width="1.6"/><path d="M10 25V16h10v9" fill="none" stroke="#B8975A" stroke-width="1.2"/></svg>
+    <div><span>ELGA</span><small>HOTEL · HWASEONG</small></div>
+  </a>
+  <nav class="main" aria-label="주 메뉴">
+    <a href="#rooms" data-nav="rooms">객실</a>
+    <a href="#home" data-jump="dining">다이닝</a>
+    <a href="#home" data-jump="weekend">주말 여정</a>
+    <a href="#home" data-jump="corporate">기업 제휴</a>
+    <a href="#location" data-nav="location">오시는 길</a>
+  </nav>
+  <a class="btn-gold" href="#home" data-jump="booking">예약하기</a>
+  <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="drawer" aria-label="메뉴 열기"><svg viewBox="0 0 20 20" fill="none" stroke-width="1.6"><path d="M2 5h16M2 10h16M2 15h16"/></svg></button>
+</div></header>
+<div class="drawer" id="drawer" hidden>
+  <a href="#rooms">객실</a><a href="#home" data-jump="dining">다이닝</a><a href="#home" data-jump="weekend">주말 여정</a><a href="#home" data-jump="corporate">기업 제휴</a><a href="#location">오시는 길</a>
+</div>
+
+<main>
+<!-- ===================== HOME ===================== -->
+<div id="v-home" data-view="home">
+  <section class="hero" aria-label="소개">
+    <div class="hero-ph ph"><img src="img/lobby.jpg" alt="블랙 마블 벽과 금색 격자 천장이 있는 엘가호텔 로비 프런트" style="object-position:70% 40%"></div>
+    <div class="in">
+      <p class="eyebrow">Hyangnam · Hwaseong</p>
+      <h1>남양연구소 <em>약 20분</em>.<br>하루의 끝은 금빛 천장 아래에서.</h1>
+      <p class="sub">향남제약단지와 서해안고속도로 발안IC 가까이, 80개 객실 전부 킹사이즈 침대와 고사양 PC, 월풀 욕조를 갖춘 비즈니스 호텔입니다.</p>
+    </div>
+  </section>
+
+  <div class="in book-wrap" id="booking">
+    <div class="book">
+      <form id="bookForm" novalidate>
+        <div class="bf"><label for="ci">체크인</label><input id="ci" type="date" required></div>
+        <div class="bf"><label for="co">체크아웃</label><input id="co" type="date" required></div>
+        <div class="bf"><span class="lb" id="gl">인원</span>
+          <div class="step" role="group" aria-labelledby="gl"><button type="button" data-step="-1" aria-label="인원 줄이기">−</button><output id="guests" aria-live="polite">성인 1</output><button type="button" data-step="1" aria-label="인원 늘리기">+</button></div></div>
+        <div class="bf"><span class="lb">숙박</span><output id="nights" style="font-weight:500;font-size:16px">2박</output></div>
+        <button class="go" type="submit">요금 확인</button>
+      </form>
+      <div class="book-sub">
+        <div class="chips" role="group" aria-label="여행 목적"><span class="lb">여행 목적</span>
+          <button type="button" class="chip" data-purpose="biz" aria-pressed="true">출장</button>
+          <button type="button" class="chip" data-purpose="long" aria-pressed="false">연박</button>
+          <button type="button" class="chip" data-purpose="spa" aria-pressed="false">온천 주말</button>
+          <button type="button" class="chip" data-purpose="family" aria-pressed="false">가족</button>
+        </div>
+        <label class="corp" for="corpCode">기업 코드 <input type="text" id="corpCode" placeholder="선택 입력" autocomplete="off"></label>
+      </div>
+      <div class="results" id="results" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <section class="blk why-blk" aria-labelledby="whyH" style="margin-top:72px">
+    <div class="in">
+      <div class="why-grid">
+        <div>
+          <p class="eyebrow">Why ELGA</p>
+          <h2 id="whyH">출장지에서 가장 가까운 호텔,<br>그래서 더 오래 잘 수 있습니다.</h2>
+          <p class="lead">아침 회의 전 이동 시간을 줄이세요. 수원역에서는 일반버스 35·38번이 발안까지 연결되고, 호텔 바로 옆 공용주차장은 무료입니다.</p>
+        </div>
+        <ul class="dist">
+          <li><span class="nm">현대기아 남양연구소<small>차량 · 예시 소요 시간</small></span><span class="t">20<small>분</small></span></li>
+          <li><span class="nm">향남제약단지<small>차량</small></span><span class="t">10<small>분</small></span></li>
+          <li><span class="nm">서해안고속도로 발안IC<small>차량</small></span><span class="t">5<small>분</small></span></li>
+          <li><span class="nm">월문 · 발안식염 · 율암온천<small>차량</small></span><span class="t">15<small>분 내</small></span></li>
+        </ul>
+      </div>
+      <div class="facil">
+        <div><svg viewBox="0 0 24 24"><path d="M3 18v-6h18v6M3 12V7h8v5M3 18v2M21 18v2"/></svg><b>킹사이즈 침대</b><span>더블·스위트 객실</span></div>
+        <div><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg><b>고사양 PC · 55″ UHD</b><span>전 객실 설치</span></div>
+        <div><svg viewBox="0 0 24 24"><path d="M3 12h18v2a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6zM6 12V6a2 2 0 0 1 4 0"/></svg><b>월풀 욕조 · 비데</b><span>전 객실</span></div>
+        <div><svg viewBox="0 0 24 24"><path d="M5 11h14v2a7 7 0 0 1-14 0zM9 4c0 2 2 2 2 4M14 4c0 2 2 2 2 4"/></svg><b>조식 뷔페</b><span>2층 · 매일 20여 가지</span></div>
+        <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><b>다국어 프런트</b><span>24시간 · 특급호텔 출신</span></div>
+      </div>
+      <div class="strip" aria-label="호텔 공간 사진">
+        <div class="ph"><img src="img/corridor.jpg" alt="조명이 줄지어 켜진 어두운 객실 복도" loading="lazy"></div>
+        <div class="ph"><img src="img/chandelier-red.jpg" alt="붉은 크리스털 샹들리에" loading="lazy"></div>
+        <div class="ph"><img src="img/pendant.jpg" alt="철제 케이지 펜던트 조명" loading="lazy"></div>
+        <div class="ph"><img src="img/door.jpg" alt="금색 몰딩이 있는 검은 객실 문" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" aria-labelledby="roomsH">
+    <div class="in">
+      <div class="sh">
+        <div><p class="eyebrow">Rooms</p><h2 id="roomsH">여섯 가지 객실, 80개의 방</h2></div>
+        <a class="more" href="#rooms">객실 전체 보기 →</a>
+      </div>
+      <div class="rp">
+        <a class="rcard" href="#rooms"><div class="ph"><img src="img/room-junior.jpg" alt="계단이 있는 복층형 주니어 스위트" loading="lazy"></div><div class="meta"><h3>주니어 스위트</h3><b>₩90,000~</b></div><p>계단으로 오르는 복층형 스위트. 최대 3인까지 함께 머물 수 있습니다.</p></a>
+        <a class="rcard" href="#rooms"><div class="ph"><img src="img/room-luxury.jpg" alt="서재 벽지와 소파, 샹들리에가 있는 럭셔리 더블" loading="lazy"></div><div class="meta"><h3>럭셔리 더블</h3><b>₩70,000~</b></div><p>서재 분위기의 벽과 소파, 킹 베드.</p></a>
+        <a class="rcard" href="#rooms"><div class="ph"><img src="img/room-twin.jpg" alt="침대 두 개와 PC 두 대가 있는 프리미엄 트윈" loading="lazy"></div><div class="meta"><h3>프리미엄 트윈</h3><b>₩80,000~</b></div><p>침대 2개에 PC도 2대. 동료와 함께하는 출장에.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="weekend" aria-labelledby="wkH" style="padding-top:0">
+    <div class="in wk">
+      <div class="ph ph-onsen"><span class="tag">사진 · 인근 온천 또는 객실 월풀 욕조의 아침</span></div>
+      <div class="wk-body">
+        <p class="eyebrow">Weekend</p>
+        <h2 id="wkH">평일엔 출장 호텔,<br>주말엔 온천 마을의 숙소.</h2>
+        <div class="springs">
+          <div><b>월문온천</b><span>알칼리성 온천</span></div>
+          <div><b>발안식염온천</b><span>바닷물 성분 식염천</span></div>
+          <div><b>율암온천</b><span>한적한 노천 분위기</span></div>
+        </div>
+        <ol class="tl">
+          <li><time>토 15:00</time><span>체크인, 무료 주차</span></li>
+          <li><time>토 16:00</time><span>가까운 온천에서 몸 풀기</span></li>
+          <li><time>토 19:00</time><span>발안만세시장 저녁 산책</span></li>
+          <li><time>일 08:00</time><span>2층 레스토랑 조식 뷔페</span></li>
+          <li><time>일 11:00</time><span>궁평항·제부도 서해 드라이브</span></li>
+        </ol>
+        <div class="pkg"><div><b>온천 주말 패키지</b><span>주니어 스위트 1박 · 2인 조식 · 온천 이용권 2매 · 예시 구성</span></div><button class="btn-gold" type="button" data-pick="spa">이 일정으로 예약</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" style="padding-top:0" aria-label="다이닝과 기업 제휴">
+    <div class="in duo">
+      <div class="dcard" id="dining">
+        <div class="ph ph-breakfast"><span class="tag">사진 · 뷔페 테이블</span></div>
+        <div class="bd">
+          <p class="eyebrow">Dining</p>
+          <h3>매일 아침, 20여 가지 조식 뷔페</h3>
+          <p>국내외 투숙객 모두의 입맛에 맞춘 메뉴를 2층 레스토랑에서 준비합니다.</p>
+          <dl><dt>위치</dt><dd>2층 레스토랑</dd><dt>요금</dt><dd>객실 예약 시 추가 (예시)</dd></dl>
+        </div>
+      </div>
+      <div class="corpcard" id="corporate">
+        <p class="eyebrow">Corporate</p>
+        <h3>기업 제휴 요금</h3>
+        <ul>
+          <li>월 10박 이상 숙박 기업 전용 요금 (예시 기준)</li>
+          <li>후불 월 정산 · 법인 세금계산서</li>
+          <li>장기 투숙 객실 지정과 조식 포함 옵션</li>
+        </ul>
+        <div class="actions"><a class="btn-gold" href="#home" data-jump="booking">기업 코드로 예약</a><span class="btn-line" style="color:#6B5426;border-color:#B8975A">elgahotel15@gmail.com</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" style="padding-top:0" aria-labelledby="locH">
+    <div class="in">
+      <div class="loc">
+        <div class="map" role="img" aria-label="호텔 위치 약도"><div class="pin"><i></i><span>엘가호텔</span></div><small>약도 자리 · 실제 지도 서비스 링크로 연결</small></div>
+        <div class="bd">
+          <p class="eyebrow">Location</p>
+          <h3 id="locH">오시는 길</h3>
+          <div class="addr"><span>경기도 화성시 향남읍 평6길 46-1</span><button class="copy" type="button" data-copy="경기도 화성시 향남읍 평6길 46-1">주소 복사</button></div>
+          <div class="ways">
+            <div><b>버스</b><span>수원역에서 일반버스 35·38번, 발안 하차 후 도보 5분</span></div>
+            <div><b>자동차</b><span>서해안고속도로 발안IC 또는 봉담IC 경유</span></div>
+            <div><b>주차</b><span>호텔 바로 옆 공용주차장 무료</span></div>
+          </div>
+          <a class="more" href="#location" style="width:max-content">교통편 자세히 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== ROOMS ===================== -->
+<div id="v-rooms" data-view="rooms" hidden>
+  <section class="page-hero"><div class="in">
+    <p class="eyebrow">Rooms</p>
+    <h1>객실</h1>
+    <p>모든 객실에 55인치 UHD TV, 고사양 PC, 전자동 비데와 월풀 욕조가 있습니다. 목적에 맞는 방을 골라 보세요.</p>
+  </div></section>
+  <div class="in">
+    <div class="common"><b>전 객실 공통</b><span>55″ UHD TV</span><span>고사양 PC</span><span>월풀 욕조</span><span>전자동 비데</span><span>무선인터넷</span><span>소형 냉장고</span><span>개별 냉난방</span></div>
+    <div class="filter chips" role="group" aria-label="객실 유형">
+      <button type="button" class="chip" data-f="all" aria-pressed="true">전체</button>
+      <button type="button" class="chip" data-f="double" aria-pressed="false">더블</button>
+      <button type="button" class="chip" data-f="twin" aria-pressed="false">트윈·가족</button>
+      <button type="button" class="chip" data-f="suite" aria-pressed="false">스위트</button>
+    </div>
+    <div class="rooms" id="roomList"></div>
+  </div>
+</div>
+
+<!-- ===================== LOCATION ===================== -->
+<div id="v-location" data-view="location" hidden>
+  <section class="page-hero"><div class="in">
+    <p class="eyebrow">Location</p>
+    <h1>오시는 길</h1>
+    <p>수원역에서 버스로, 서울·서해안 방면에서는 고속도로로 오실 수 있습니다. 주차는 무료입니다.</p>
+  </div></section>
+  <div class="in lgrid">
+    <div class="map" role="img" aria-label="호텔 위치 약도"><div class="pin"><i></i><span>엘가호텔</span></div><small>약도 자리 · 실제 지도 서비스 링크로 연결</small></div>
+    <div style="display:grid;gap:18px;align-content:start">
+      <div class="lcard">
+        <h2>엘가호텔</h2>
+        <div class="addr"><span>경기도 화성시 향남읍 평6길 46-1 (평리 128)</span><button class="copy" type="button" data-copy="경기도 화성시 향남읍 평6길 46-1">주소 복사</button></div>
+        <div class="addr"><span>전화 031-366-3319 · 24시간</span><button class="copy" type="button" data-copy="031-366-3319">번호 복사</button></div>
+      </div>
+      <div>
+        <div class="tabs" role="tablist" aria-label="교통편">
+          <button role="tab" id="t-sub" aria-selected="true" aria-controls="p-sub">수원역에서</button>
+          <button role="tab" id="t-bus" aria-selected="false" aria-controls="p-bus">버스 정류장</button>
+          <button role="tab" id="t-car" aria-selected="false" aria-controls="p-car">자동차</button>
+          <button role="tab" id="t-park" aria-selected="false" aria-controls="p-park">주차</button>
+        </div>
+        <div class="panel" role="tabpanel" id="p-sub" aria-labelledby="t-sub"><p>수원역에서 일반버스 <b>35번</b> 또는 <b>38번</b>을 타고 발안 외환은행 정류장에서 내린 뒤 걸어서 5분입니다.</p></div>
+        <div class="panel" role="tabpanel" id="p-bus" aria-labelledby="t-bus" hidden><table>
+          <tr><td>발안농협 (37-265)</td><td>일반 21, 33-1, 33-2</td></tr>
+          <tr><td>발안·영광슈퍼 (37-266)</td><td>일반 78</td></tr>
+          <tr><td>발안기업은행 (37-277)</td><td>일반 21, 78</td></tr>
+          <tr><td>파출소 앞</td><td>마을 13-1</td></tr>
+          <tr><td>발안사거리·평리 (37-268)</td><td>일반 3-2, 11-1, 21, 78 · 마을 37</td></tr>
+          <tr><td>발안사거리·평리 (37-625)</td><td>일반 3-2, 1-1, 21, 35, 78, 340 · 좌석 340-1</td></tr>
+        </table></div>
+        <div class="panel" role="tabpanel" id="p-car" aria-labelledby="t-car" hidden><table>
+          <tr><td>서울(강남)</td><td>과천 → 과천의왕고속도로 → 봉담IC → 발안</td></tr>
+          <tr><td>서서울·광주·목포</td><td>서해안고속도로 → 발안IC</td></tr>
+          <tr><td>수원</td><td>오목천삼거리 → 43번 국도 → 발안</td></tr>
+          <tr><td>동탄</td><td>북오산IC → 향남IC → 82번 지방도 → 발안</td></tr>
+          <tr><td>오산</td><td>벌음삼거리 → 82번 지방도 → 발안</td></tr>
+        </table></div>
+        <div class="panel" role="tabpanel" id="p-park" aria-labelledby="t-park" hidden><p><b>무료.</b> 호텔 바로 옆 공용주차장을 이용하시면 가장 편리합니다.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer><div class="in">
+  <div style="display:grid;gap:12px">
+    <h4>ELGA</h4>
+    <p>엘가비즈니스관광호텔 · 경기도 화성시 향남읍 평6길 46-1</p>
+    <p>상호 엘가관광호텔 · 대표 오홍섭 · 사업자등록번호 143-01-95645</p>
+  </div>
+  <div style="display:grid;gap:6px">
+    <b>예약·문의 (24시간)</b>
+    <span class="tel">031-366-3319</span>
+    <span>elgahotel15@gmail.com</span>
+  </div>
+  <ul>
+    <li><a href="#rooms" style="text-decoration:none">객실</a></li>
+    <li><a href="#home" data-jump="weekend" style="text-decoration:none">주말 여정</a></li>
+    <li><a href="#home" data-jump="corporate" style="text-decoration:none">기업 제휴</a></li>
+    <li><a href="#location" style="text-decoration:none">오시는 길</a></li>
+  </ul>
+</div></footer>
+
+<div class="mbar" aria-label="빠른 예약">
+  <div class="info" id="mbInfo">11.17 – 11.19 · 2박<b>₩178,000~</b></div>
+  <span class="copybtn"><button type="button" data-copy="031-366-3319">전화번호</button></span>
+  <button type="button" class="pri" data-jump="booking">예약</button>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+  var ROOMS=[
+    {id:"std",k:"Standard Double",n:"스탠다드 더블",t:"double",img:"img/room-standard.jpg",rate:60000,feat:"아치형 헤드월",bed:"킹 1",max:"2인",desc:"스탠다드 객실이지만 다른 호텔보다 넓은 크기. 혼자 오는 출장에 알맞습니다.",tags:{biz:"1인 출장 추천",long:"연박 할인 대상"}},
+    {id:"lux",k:"Luxury Double",n:"럭셔리 더블",t:"double",img:"img/room-luxury.jpg",rate:70000,feat:"소파 · 서재 벽",bed:"킹 1",max:"2인",desc:"서재 분위기의 벽과 소파가 있어 저녁 업무와 휴식을 함께하기 좋습니다.",tags:{biz:"소파·업무 공간",long:"장기 출장 인기"}},
+    {id:"twin",k:"Premium Twin",n:"프리미엄 트윈",t:"twin",img:"img/room-twin.jpg",rate:80000,feat:"PC 2대",bed:"침대 2",max:"2인",desc:"침대 두 개에 PC도 두 대. 동료와 함께 오는 출장에 맞춘 객실입니다.",tags:{biz:"동료 2인 출장 · PC 2대",family:"아이 동반 가능"}},
+    {id:"jr",k:"Junior Suite",n:"주니어 스위트",t:"suite",img:"img/room-junior.jpg",rate:90000,feat:"복층형",bed:"킹 1",max:"3인",desc:"계단으로 오르는 복층형 스위트. 넓이와 시설 모두 스위트에 맞게 갖췄고 3인까지 머물 수 있습니다.",tags:{spa:"온천 주말 패키지 객실",long:"복층 · 공간 여유",family:"3인 가족"}},
+    {id:"fam",k:"Family Room",n:"패밀리룸",t:"twin",img:"img/room-family.jpg",rate:70000,feat:"바닥 침구",bed:"요 침구",max:"최대 6인",desc:"엘가에서 가장 넓은 객실. 3인 기준이며 성인 4명과 아이 2명까지 묵을 수 있습니다.",tags:{family:"최대 6인 가족",spa:"가족 온천 여행"}},
+    {id:"ph",k:"Phantom Suite",n:"팬텀 스위트",t:"suite",img:"img/room-phantom.jpg",rate:100000,feat:"안마의자",bed:"킹 1",max:"2인",desc:"바디프랜드 팬텀 안마의자를 둔 스위트. 출장의 피로를 객실 안에서 풉니다.",tags:{spa:"안마의자 · 기념일",biz:"피로 회복",long:"장기 출장 휴식"}}
+  ];
+  var ORDER={biz:["std","lux","twin"],long:["lux","jr","ph"],spa:["jr","ph","fam"],family:["fam","jr","twin"]};
+  var purpose="biz",guests=1;
+  var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+  var won=function(n){return "₩"+n.toLocaleString("ko-KR")};
+  var ci=$("#ci"),co=$("#co");
+  function iso(d){return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)}
+  var base=new Date();base.setDate(base.getDate()+7);
+  ci.value=iso(base);var b2=new Date(base);b2.setDate(b2.getDate()+2);co.value=iso(b2);
+  ci.min=iso(new Date());
+  function nights(){var a=new Date(ci.value),b=new Date(co.value);var n=Math.round((b-a)/864e5);return isNaN(n)?0:n}
+  function md(v){var p=v.split("-");return +p[1]+"."+p[2]}
+  function priceFor(r){
+    var n=Math.max(nights(),1),rate=r.rate,disc=0;
+    if(n>=3)disc+=.1;
+    if($("#corpCode").value.trim())disc+=.1;
+    var total=Math.round(rate*n*(1-disc)/1000)*1000;
+    return {n:n,total:total,orig:rate*n,disc:disc};
+  }
+  function syncSummary(){
+    var n=nights();$("#nights").textContent=n>0?n+"박":"날짜 확인";
+    co.min=ci.value;
+    var top=ROOMS.filter(function(r){return r.id===ORDER[purpose][0]})[0],p=priceFor(top);
+    $("#mbInfo").innerHTML=(n>0?md(ci.value)+" – "+md(co.value)+" · "+n+"박":"날짜를 선택하세요")+"<b>"+won(p.total)+"~</b>";
+  }
+  function render(){
+    var n=nights(),box=$("#results");
+    if(n<=0){box.innerHTML='<p style="color:#9B3B2E">체크아웃 날짜를 체크인 다음 날 이후로 골라 주세요.</p>';return}
+    var lbl={biz:"출장",long:"연박",spa:"온천 주말",family:"가족"}[purpose];
+    var notes=[];if(n>=3)notes.push("3박 이상 10% 할인");if($("#corpCode").value.trim())notes.push("기업 코드 10% 할인");
+    var html='<div class="results-h"><h3>'+lbl+'에 맞는 객실</h3><p>'+md(ci.value)+" – "+md(co.value)+" · "+n+"박 · 성인 "+guests+(notes.length?" · "+notes.join(", "):"")+" · 현재 사이트 최저가 기준</p></div><div class=\"rlist\">";
+    ORDER[purpose].forEach(function(id){
+      var r=ROOMS.filter(function(x){return x.id===id})[0],p=priceFor(r);
+      html+='<div class="ritem"><div class="ph"><img src="'+r.img+'" alt="'+r.n+'" loading="lazy"></div><div class="bd"><span class="why">'+(r.tags[purpose]||r.k)+'</span><h4>'+r.n+'</h4><span style="font-size:13px;color:#6A645A">'+r.bed+" · "+(r.max.indexOf("최대")<0?"최대 ":"")+r.max+" · "+r.feat+'</span><div class="pr"><div>'+(p.disc?"<s>"+won(p.orig)+"</s>":"")+"<b>"+won(p.total)+"</b><small>"+n+'박 합계 · 예시 계산</small></div><button type="button" class="btn-gold" data-reserve="'+r.n+'">예약</button></div></div></div>';
+    });
+    box.innerHTML=html+"</div>";
+  }
+  // booking events
+  $("#bookForm").addEventListener("submit",function(e){e.preventDefault();render();$("#results").scrollIntoView({block:"nearest",behavior:"smooth"})});
+  [ci,co].forEach(function(el){el.addEventListener("change",function(){if(el===ci&&nights()<=0){var d=new Date(ci.value);d.setDate(d.getDate()+1);co.value=iso(d)}syncSummary();render()})});
+  $("#corpCode").addEventListener("input",function(){syncSummary();render()});
+  $$("[data-step]").forEach(function(b){b.addEventListener("click",function(){guests=Math.min(4,Math.max(1,guests+ +b.dataset.step));$("#guests").textContent="성인 "+guests;if(guests>=3&&purpose==="biz")setPurpose("family");else render()})});
+  function setPurpose(p){purpose=p;$$("[data-purpose]").forEach(function(c){c.setAttribute("aria-pressed",String(c.dataset.purpose===p))});syncSummary();render()}
+  $$("[data-purpose]").forEach(function(c){c.addEventListener("click",function(){setPurpose(c.dataset.purpose)})});
+  document.addEventListener("click",function(e){
+    var t=e.target.closest("[data-reserve]");
+    if(t){toast(t.dataset.reserve+" · 실제 사이트에서는 예약 엔진 결제 화면으로 이어집니다");}
+    var pk=e.target.closest("[data-pick]");
+    if(pk){go("home","booking");var d=new Date();d.setDate(d.getDate()+((6-d.getDay()+7)%7||7));ci.value=iso(d);var d2=new Date(d);d2.setDate(d2.getDate()+1);co.value=iso(d2);guests=2;$("#guests").textContent="성인 2";setPurpose("spa")}
+    var cp=e.target.closest("[data-copy]");
+    if(cp){var txt=cp.dataset.copy;var done=function(){toast("복사했습니다: "+txt)};
+      try{navigator.clipboard.writeText(txt).then(done,function(){toast(txt)})}catch(_){toast(txt)}}
+    var j=e.target.closest("[data-jump]");
+    if(j){e.preventDefault();go("home",j.dataset.jump);closeMenu()}
+  });
+  var tt;function toast(m){var el=$("#toast");el.textContent=m;el.hidden=false;clearTimeout(tt);tt=setTimeout(function(){el.hidden=true},2600)}
+
+  // rooms list
+  function renderRooms(f){
+    $("#roomList").innerHTML=ROOMS.filter(function(r){return f==="all"||r.t===f}).map(function(r){
+      return '<article class="room"><div class="ph"><img src="'+r.img+'" alt="'+r.n+' 객실" loading="lazy"></div><div class="bd"><p class="k">'+r.k+'</p><h2>'+r.n+'</h2><p>'+r.desc+'</p><dl class="spec"><div><dt>특징</dt><dd>'+r.feat+'</dd></div><div><dt>침대</dt><dd>'+r.bed+'</dd></div><div><dt>인원</dt><dd>'+r.max+'</dd></div><div><dt>욕실</dt><dd>월풀 욕조</dd></div></dl><div class="foot"><div><b>'+won(r.rate)+'~</b><small>1박 · 현재 사이트 표기 최저가</small></div><button type="button" class="btn-gold" data-room="'+r.id+'">이 객실로 예약</button></div></div></article>';
+    }).join("");
+  }
+  $$("[data-f]").forEach(function(c){c.addEventListener("click",function(){$$("[data-f]").forEach(function(x){x.setAttribute("aria-pressed",String(x===c))});renderRooms(c.dataset.f)})});
+  document.addEventListener("click",function(e){var r=e.target.closest("[data-room]");if(!r)return;
+    var p={std:"biz",lux:"biz",twin:"biz",jr:"spa",fam:"family",ph:"spa"}[r.dataset.room];go("home","booking");setPurpose(p)});
+
+  // tabs
+  var tabs=$$('[role="tab"]');
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){sel(t)});
+    t.addEventListener("keydown",function(e){var k=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(k){var n=tabs[(i+k+tabs.length)%tabs.length];sel(n);n.focus()}});
+  });
+  function sel(t){tabs.forEach(function(x){var on=x===t;x.setAttribute("aria-selected",String(on));x.tabIndex=on?0:-1;document.getElementById(x.getAttribute("aria-controls")).hidden=!on})}
+
+  // lang (visual only)
+  $$(".lang button").forEach(function(b){b.addEventListener("click",function(){$$(".lang button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});if(b.textContent!=="KOR")toast("영문·중문 페이지는 다음 단계에서 제작합니다")})});
+
+  // menu
+  var mb=$("#menuBtn"),dr=$("#drawer");
+  function closeMenu(){dr.hidden=true;mb.setAttribute("aria-expanded","false")}
+  mb.addEventListener("click",function(){var open=dr.hidden;dr.hidden=!open;mb.setAttribute("aria-expanded",String(open))});
+  $$("#drawer a").forEach(function(a){a.addEventListener("click",closeMenu)});
+
+  // routing
+  var VIEWS=["home","rooms","location"];
+  function go(v,anchor){
+    if(location.hash.slice(1)!==v&&!(v==="home"&&!location.hash)){history.replaceState(null,"","#"+v)}
+    show(v);
+    if(anchor){var el=document.getElementById(anchor);if(el)setTimeout(function(){el.scrollIntoView({behavior:"smooth",block:"start"})},10)}
+  }
+  function show(v){
+    if(VIEWS.indexOf(v)<0)v="home";
+    $$("[data-view]").forEach(function(s){s.hidden=s.dataset.view!==v});
+    $$("nav.main a[data-nav]").forEach(function(a){a.classList.toggle("on",a.dataset.nav===v)});
+  }
+  window.addEventListener("hashchange",function(){var v=location.hash.slice(1)||"home";show(v);window.scrollTo(0,0)});
+  show(location.hash.slice(1)||"home");
+  renderRooms("all");syncSummary();render();
+})();
+</script>
